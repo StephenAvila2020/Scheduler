@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Scheduler.Data;
 using Scheduler.Models;
 
+
 namespace Scheduler.Controllers
 {
 
@@ -56,6 +57,8 @@ namespace Scheduler.Controllers
         // GET: Shifts/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
+
             return View();
         }
 
@@ -66,6 +69,7 @@ namespace Scheduler.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int Id, [Bind("Id,EmployeeId,UserId,CategoryId,Date,UpForTrade")] Shift shift)
         {
+            
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
@@ -77,6 +81,7 @@ namespace Scheduler.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
             return View(shift);
         }
 
@@ -93,6 +98,7 @@ namespace Scheduler.Controllers
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
             return View(shift);
         }
 
@@ -132,6 +138,7 @@ namespace Scheduler.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
             return View(shift);
         }
 
