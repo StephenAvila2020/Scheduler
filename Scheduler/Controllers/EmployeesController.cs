@@ -28,10 +28,11 @@ namespace Scheduler.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var user = await GetCurrentUserAsync();
+            ApplicationUser loggedInUser = await GetCurrentUserAsync();
+            
 
-            var employees = await _context.Employee.Where(e => e.UserId == user.Id).ToListAsync();
-            return View(employees);
+            
+            return View(await _context.Employee.Where(employee => employee.UserId == loggedInUser.Id).ToListAsync());
         }
 
         // GET: Employees/Details/5
@@ -108,6 +109,8 @@ namespace Scheduler.Controllers
             {
                 try
                 {
+                    var user = await GetCurrentUserAsync();
+                    employee.UserId = user.Id;
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }

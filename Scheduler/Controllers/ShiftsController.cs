@@ -122,6 +122,7 @@ namespace Scheduler.Controllers
                     // get the current user 
                     var user = await GetCurrentUserAsync();
                     shift.UserId = user.Id;
+                    
                     _context.Update(shift);
                     await _context.SaveChangesAsync();
                 }
