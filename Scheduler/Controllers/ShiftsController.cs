@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Scheduler.Data;
 using Scheduler.Models;
 
+
 namespace Scheduler.Controllers
 {
 
@@ -56,6 +57,8 @@ namespace Scheduler.Controllers
         // GET: Shifts/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
+
             return View();
         }
 
@@ -66,6 +69,7 @@ namespace Scheduler.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int Id, [Bind("Id,EmployeeId,UserId,CategoryId,Date,UpForTrade")] Shift shift)
         {
+            
             if (ModelState.IsValid)
             {
                 var user = await GetCurrentUserAsync();
@@ -77,6 +81,7 @@ namespace Scheduler.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
             return View(shift);
         }
 
@@ -93,6 +98,7 @@ namespace Scheduler.Controllers
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
             return View(shift);
         }
 
@@ -101,7 +107,7 @@ namespace Scheduler.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EmployeeId,CategoryId,Date,UpForTrade")] Shift shift)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EmployeeId,CategoryId,Date,UpForTrade")] Shift shift, int Id)
         {
             if (id != shift.Id)
             {
@@ -110,8 +116,12 @@ namespace Scheduler.Controllers
 
             if (ModelState.IsValid)
             {
+               
                 try
                 {
+                    // get the current user 
+                    var user = await GetCurrentUserAsync();
+                    shift.UserId = user.Id;
                     _context.Update(shift);
                     await _context.SaveChangesAsync();
                 }
@@ -128,6 +138,7 @@ namespace Scheduler.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Id");
             return View(shift);
         }
 
