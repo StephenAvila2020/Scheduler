@@ -101,7 +101,7 @@ namespace Scheduler.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EmployeeId,CategoryId,Date,UpForTrade")] Shift shift)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EmployeeId,CategoryId,Date,UpForTrade")] Shift shift, int Id)
         {
             if (id != shift.Id)
             {
@@ -110,8 +110,12 @@ namespace Scheduler.Controllers
 
             if (ModelState.IsValid)
             {
+               
                 try
                 {
+                    // get the current user 
+                    var user = await GetCurrentUserAsync();
+                    shift.UserId = user.Id;
                     _context.Update(shift);
                     await _context.SaveChangesAsync();
                 }
